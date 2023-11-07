@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_ecommerce/common/constants/colors.dart';
 import 'package:flutter_ecommerce/common/constants/images.dart';
+import 'package:flutter_ecommerce/presentation/account/account_page.dart';
 import 'package:flutter_ecommerce/presentation/cart/cart_page.dart';
 import 'package:flutter_ecommerce/presentation/explore/explore_page.dart';
+import 'package:flutter_ecommerce/presentation/home/bloc/products/products_bloc.dart';
 import 'package:flutter_ecommerce/presentation/home/home_page.dart';
+import 'package:flutter_ecommerce/presentation/product_detail/product_detail_page.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -14,15 +18,21 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState extends State<DashboardPage> {
   int currentIndex = 0;
+  late ProductsBloc productsBloc;
 
   List<Widget> pages = [
     const HomePage(),
     const ExplorePage(),
     const CartPage(),
-    const Center(
-      child: Text('Account Page'),
-    )
+    const AccountPage(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    productsBloc = BlocProvider.of<ProductsBloc>(context);
+    productsBloc.add(const ProductsEvent.getAll());
+  }
 
   void setCurrentIndex(int value) {
     setState(() {

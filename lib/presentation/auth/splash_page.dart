@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ecommerce/common/constants/images.dart';
+import 'package:flutter_ecommerce/data/datasource/auth_local_datasource.dart';
 import 'package:flutter_ecommerce/presentation/auth/login_page.dart';
+import 'package:flutter_ecommerce/presentation/home/dashboard_page.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SplashPage extends StatefulWidget {
@@ -13,36 +15,41 @@ class SplashPage extends StatefulWidget {
 class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    isLogin();
+  }
+
+  Future<void> isLogin() async {
+    final user = await AuthLocalDatasource().isLogin();
+
     Future.delayed(
       const Duration(seconds: 3),
-      () => Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) {
-            return const LoginPage();
-          },
-        ),
-      ),
+      () {
+        if (user) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return const DashboardPage();
+              },
+            ),
+          );
+        } else {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return const LoginPage();
+              },
+            ),
+          );
+        }
+      },
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    // Future.delayed(
-    //   const Duration(seconds: 2),
-    //   () {
-    //     Navigator.pushReplacement(
-    //       context,
-    //       MaterialPageRoute(
-    //         builder: (context) {
-    //           return const LoginPage();
-    //         },
-    //       ),
-    //     );
-    //   },
-    // );
     return Scaffold(
       body: Center(
         child: Image.asset(

@@ -5,6 +5,7 @@ import 'package:flutter_ecommerce/common/components/custom_text_field.dart';
 import 'package:flutter_ecommerce/common/components/space_height.dart';
 import 'package:flutter_ecommerce/common/constants/colors.dart';
 import 'package:flutter_ecommerce/common/constants/images.dart';
+import 'package:flutter_ecommerce/data/datasource/auth_local_datasource.dart';
 import 'package:flutter_ecommerce/data/model/requests/login_request_model.dart';
 import 'package:flutter_ecommerce/presentation/auth/bloc/login/login_bloc.dart';
 import 'package:flutter_ecommerce/presentation/auth/register_page.dart';
@@ -24,7 +25,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
+   
     emaileController.dispose();
     passwordController.dispose();
     super.dispose();
@@ -54,7 +55,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             SpaceHeight(20.h),
             Text(
-              'FIC 9',
+              'E-commercer Afgan Taufiq Hidayat',
               style: TextStyle(
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w700,
@@ -88,7 +89,8 @@ class _LoginPageState extends State<LoginPage> {
               listener: (context, state) {
                 state.maybeWhen(
                   orElse: () {},
-                  success: (data) {
+                  success: (data) async {
+                    AuthLocalDatasource().saveAuthData(data);
                     Navigator.push(
                       context,
                       MaterialPageRoute(

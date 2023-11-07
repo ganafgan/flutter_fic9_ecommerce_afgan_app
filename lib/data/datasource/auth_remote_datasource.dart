@@ -11,7 +11,7 @@ class AuthRemoteDatasource {
     final headers = {
       'Content-Type': 'application/json',
     };
-    final uri = Uri.parse('${Variables.baseUrl}api/auth/local/register');
+    final uri = Uri.parse('${Variables.baseUrl}/api/auth/local/register');
     final response = await http.post(
       uri,
       body: data.toJson(),
@@ -30,7 +30,7 @@ class AuthRemoteDatasource {
     final headers = {
       'Content-Type': 'application/json',
     };
-    final uri = Uri.parse('${Variables.baseUrl}api/auth/local');
+    final uri = Uri.parse('${Variables.baseUrl}/api/auth/local');
     final response = await http.post(
       uri,
       body: data.toJson(),

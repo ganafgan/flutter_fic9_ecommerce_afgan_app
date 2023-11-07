@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_ecommerce/common/constants/colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class CustomTextField extends StatelessWidget {
+class CustomTextField extends StatefulWidget {
   const CustomTextField({
     Key? key,
     required this.controller,
@@ -18,12 +18,18 @@ class CustomTextField extends StatelessWidget {
   final bool obsecureText;
 
   @override
+  State<CustomTextField> createState() => _CustomTextFieldState();
+}
+
+class _CustomTextFieldState extends State<CustomTextField> {
+  bool showPassword = false;
+  @override
   Widget build(BuildContext context) {
     return TextFormField(
-      controller: controller,
-      obscureText: obsecureText,
+      controller: widget.controller,
+      obscureText: widget.obsecureText && !showPassword,
       decoration: InputDecoration(
-        labelText: label,
+        labelText: widget.label,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(6),
           borderSide: const BorderSide(
@@ -40,6 +46,17 @@ class CustomTextField extends StatelessWidget {
           borderRadius: BorderRadius.circular(6.w),
           borderSide: const BorderSide(color: ColorName.primary),
         ),
+        suffixIcon: widget.obsecureText
+            ? IconButton(
+                onPressed: () {
+                  setState(() {
+                    showPassword = !showPassword;
+                  });
+                },
+                icon: Icon(
+                    showPassword ? Icons.visibility_off : Icons.visibility),
+              )
+            : const SizedBox(),
       ),
     );
   }

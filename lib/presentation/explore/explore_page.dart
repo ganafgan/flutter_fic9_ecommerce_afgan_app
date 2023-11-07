@@ -12,39 +12,42 @@ class ExplorePage extends StatelessWidget {
         List.generate(100, (index) => {'id': index, 'name': 'Product $index'})
             .toList();
 
-    return Scaffold(
+    return const Scaffold(
       body: SafeArea(
-        child: ListView(
-          padding: EdgeInsets.symmetric(
-            horizontal: 16.w,
-          ),
-          children: [
-            SpaceHeight(20.h),
-            const Text('Explore Page'),
-            Expanded(
-              child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 10,
-                  crossAxisSpacing: 10,
-                  childAspectRatio: 3/4,
-                ),
-                /* tambahkan ini ketika running ListView Builder didalam ListView */
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: myProducts.length,
-                itemBuilder: (context, index) {
-                  return Container(
-                    decoration: BoxDecoration(
-                      color: ColorName.primary,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Text(myProducts[index]['name']),
-                  );
-                },
-              ),
-            )
-          ],
+        // child: ListView(
+        //   padding: EdgeInsets.symmetric(
+        //     horizontal: 16.w,
+        //   ),
+        //   children: [
+        //     SpaceHeight(20.h),
+        //     const Text('Explore Page'),
+        //     Expanded(
+        //       child: GridView.builder(
+        //         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        //           crossAxisCount: 2,
+        //           mainAxisSpacing: 10,
+        //           crossAxisSpacing: 10,
+        //           childAspectRatio: 3/4,
+        //         ),
+        //         /* tambahkan ini ketika running ListView Builder didalam ListView */
+        //         shrinkWrap: true,
+        //         physics: const NeverScrollableScrollPhysics(),
+        //         itemCount: myProducts.length,
+        //         itemBuilder: (context, index) {
+        //           return Container(
+        //             decoration: BoxDecoration(
+        //               color: ColorName.primary,
+        //               borderRadius: BorderRadius.circular(10),
+        //             ),
+        //             child: Text(myProducts[index]['name']),
+        //           );
+        //         },
+        //       ),
+        //     )
+        //   ],
+        // ),
+        child: Center(
+          child: Text('explore'),
         ),
       ),
     );

@@ -1,15 +1,19 @@
-import 'package:flutter/material.dart';
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:flutter_ecommerce/common/components/space_height.dart';
 import 'package:flutter_ecommerce/common/constants/colors.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ImageSlider extends StatefulWidget {
   const ImageSlider({
-    super.key,
+    Key? key,
     required this.items,
-  });
+    this.isRounded = false,
+  }) : super(key: key);
   final List<String> items;
+  final bool isRounded;
 
   @override
   State<ImageSlider> createState() => _ImageSliderState();
@@ -19,6 +23,7 @@ class _ImageSliderState extends State<ImageSlider> {
   int currentIndex = 0;
   final CarouselController controller = CarouselController();
 
+  /* untuk manual bisa menggunakan page view builder */
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -26,12 +31,12 @@ class _ImageSliderState extends State<ImageSlider> {
         CarouselSlider(
           items: widget.items.map((e) {
             return ClipRRect(
-              borderRadius: BorderRadius.circular(8.w),
+              borderRadius: widget.isRounded ? BorderRadius.circular(8.w) : BorderRadius.zero,
               child: Image.asset(
                 e,
                 height: 206,
                 width: MediaQuery.of(context).size.width,
-                fit: BoxFit.contain,
+                fit: BoxFit.cover,
               ),
             );
           }).toList(),
@@ -60,8 +65,9 @@ class _ImageSliderState extends State<ImageSlider> {
                 margin: EdgeInsets.symmetric(horizontal: 4.w),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5.w),
-                  color: ColorName.primary
-                      .withOpacity(currentIndex == e.key ? 0.9 : 0.4),
+                  color: ColorName.primary.withOpacity(
+                    currentIndex == e.key ? 0.9 : 0.4,
+                  ),
                 ),
               ),
             );
