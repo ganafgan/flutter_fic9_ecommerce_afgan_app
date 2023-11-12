@@ -1,17 +1,322 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:dartz/dartz_unsafe.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_ecommerce/common/components/button.dart';
+import 'package:flutter_ecommerce/common/components/custom_dropdown.dart';
+import 'package:flutter_ecommerce/common/components/header_title.dart';
+import 'package:flutter_ecommerce/common/components/row_text.dart';
+import 'package:flutter_ecommerce/common/components/space_height.dart';
+import 'package:flutter_ecommerce/common/constants/colors.dart';
+import 'package:flutter_ecommerce/common/extensions/int_ext.dart';
+import 'package:flutter_ecommerce/presentation/cart/bloc/cart/cart_bloc.dart';
+import 'package:flutter_ecommerce/presentation/cart/bloc/order/order_bloc.dart';
+import 'package:flutter_ecommerce/presentation/cart/widget/cart_tile.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class CartPage extends StatelessWidget {
-  const CartPage({super.key});
+class CartPage extends StatefulWidget {
+  const CartPage({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  State<CartPage> createState() => _CartPageState();
+}
+
+class _CartPageState extends State<CartPage> {
+  int courierPrice = 25000;
+  // List<Map> myLists =
+  //     List.generate(100, (index) => {'index': index, 'name': 'name is $index'});
+
+  // List<CartModel> carts = [
+  //   CartModel(
+  //     id: 1,
+  //     imagePath: Images.product1,
+  //     name: 'Tas Kekinian',
+  //     price: 200000,
+  //   ),
+  //   CartModel(
+  //     id: 2,
+  //     imagePath: Images.product2,
+  //     name: 'Earphone',
+  //     price: 199999,
+  //   ),
+  // ];
+
+  // void setCarts() {
+  //   setState(() {
+  //     if (carts.isEmpty) {
+  //       carts.addAll([...carts2]);
+  //     } else {
+  //       carts.clear();
+  //     }
+  //   });
+
+  //   debugPrint(carts.toString());
+  // }
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   context
+  //       .read<CartBloc>()
+  //       .add(CartEvent.add(CartModel(product: widget.product, quantity: 1)));
+  // }
 
   @override
   Widget build(BuildContext context) {
-    List<Map> myLists = List.generate(
-        100, (index) => {'index': index, 'name': 'name is $index'});
-    return const Scaffold(
+    return Scaffold(
       body: SafeArea(
-          child: Center(
-        child: Text('Cart'),
-      )),
+        child: ListView(
+          padding: EdgeInsets.all(16.w),
+          children: [
+            HeaderBack(
+              title: 'Carts',
+              onBack: () {},
+              isBack: false,
+            ),
+            SpaceHeight(16.h),
+            // if (carts.isEmpty)
+            //   Center(
+            //     child: Padding(
+            //       padding: EdgeInsets.only(
+            //         top: MediaQuery.of(context).size.height * 0.3,
+            //       ),
+            //       child: Column(
+            //         children: [
+            //           const Icon(
+            //             Icons.add_shopping_cart,
+            //             size: 100,
+            //             color: ColorName.primary,
+            //           ),
+            //           SpaceHeight(10.h),
+            //           Text(
+            //             'Oooooppps \nKeranjang anda kosong',
+            //             style: TextStyle(
+            //               fontSize: 14.sp,
+            //               fontWeight: FontWeight.w500,
+            //             ),
+            //             textAlign: TextAlign.center,
+            //           ),
+            //           SpaceHeight(20.h),
+            //           Button.filled(
+            //             onPressed: () {},
+            //             label: 'Cari barang',
+            //             width: 200.w,
+            //           )
+            //         ],
+            //       ),
+            //     ),
+            //   ),
+            BlocBuilder<CartBloc, CartState>(
+              builder: (context, state) {
+                return state.maybeWhen(
+                  orElse: () {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  },
+                  success: (carts) {
+                    return ListView.separated(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      separatorBuilder: (context, index) {
+                        return SpaceHeight(10.h);
+                      },
+                      itemCount: carts.length,
+                      itemBuilder: (context, index) {
+                        return CartItemWidget(
+                          data: carts[index],
+                        );
+                      },
+                    );
+                  },
+                );
+              },
+            ),
+            SpaceHeight(16.h),
+            /* button for choosing shipping address */
+            // if (carts.isNotEmpty)
+
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 40.w),
+              child: Button.filled(
+                onPressed: () {},
+                label: 'Pilih Alamat Pengiriman',
+              ),
+            ),
+            SpaceHeight(16.h),
+            // if (carts.isNotEmpty)
+            Container(
+              padding: EdgeInsets.all(16.w),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5.w),
+                border: Border.all(color: ColorName.border),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Alamat pengiriman',
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  SpaceHeight(16.h),
+                  Text(
+                    'Nama Lengkap',
+                    style: TextStyle(
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w400,
+                      color: ColorName.grey,
+                    ),
+                  ),
+                  SpaceHeight(8.h),
+                  Text(
+                    'Alamat Lengkap',
+                    style: TextStyle(
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w400,
+                      color: ColorName.grey,
+                    ),
+                  ),
+                  SpaceHeight(8.h),
+                  Text(
+                    'Kota, Provinsi, Kode Pos',
+                    style: TextStyle(
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w400,
+                      color: ColorName.grey,
+                    ),
+                  ),
+                  SpaceHeight(8.h),
+                  Text(
+                    'No Handphone',
+                    style: TextStyle(
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w400,
+                      color: ColorName.grey,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SpaceHeight(16.h),
+            /* container for dropdown courier */
+            // if (carts.isNotEmpty)
+            Container(
+              padding: EdgeInsets.all(16.w),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5.w),
+                border: Border.all(color: ColorName.border),
+              ),
+              child: CustomDropdown(
+                items: const ['JNE', 'TIKI', 'Shopee Xpress', 'J&T'],
+                label: 'Kurir',
+                value: 'JNE',
+                onChanged: (value) {
+                  debugPrint(value);
+                },
+              ),
+            ),
+            SpaceHeight(16.h),
+            // if (carts.isNotEmpty)
+            Container(
+              padding: EdgeInsets.all(16.w),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5.w),
+                border: Border.all(color: ColorName.border),
+              ),
+              child: Column(
+                children: [
+                  BlocBuilder<CartBloc, CartState>(
+                    builder: (context, state) {
+                      return state.maybeWhen(
+                        orElse: () {
+                          return RowText(
+                            label: 'Total Harga',
+                            value: 0.currencyFormatRp,
+                          );
+                        },
+                        success: (carts) {
+                          int total = 0;
+                          /* cara 1 */
+                          // for (var cart in carts) {
+                          //   totalPrice += (cart.quantity * int.parse(cart.product.attributes.price));
+                          // }
+
+                          /* cara 2 */
+                          carts.forEach(
+                            (element) {
+                              total += (element.quantity *
+                                  int.parse(element.product.attributes.price));
+                            },
+                          );
+
+                          return RowText(
+                            label: 'Total Harga',
+                            value: total.currencyFormatRp,
+                          );
+                        },
+                      );
+                    },
+                  ),
+                  SpaceHeight(12.h),
+                  RowText(
+                    label: 'Biaya Pengiriman',
+                    value: courierPrice.currencyFormatRp,
+                  ),
+                  SpaceHeight(40.h),
+                  const Divider(color: ColorName.border),
+                  SpaceHeight(12.h),
+                  BlocBuilder<CartBloc, CartState>(
+                    builder: (context, state) {
+                      return state.maybeWhen(
+                        orElse: () {
+                          return RowText(
+                            label: 'Total Harga',
+                            value: 0.currencyFormatRp,
+                          );
+                        },
+                        success: (carts) {
+                          int total = 0;
+                          for (var cart in carts) {
+                            total += (cart.quantity *
+                                int.parse(cart.product.attributes.price));
+                          }
+                          int totals = total + courierPrice;
+                          return RowText(
+                            label: 'Total Harga',
+                            value: totals.currencyFormatRp,
+                            valueColor: ColorName.primary,
+                            fontWeight: FontWeight.w600,
+                          );
+                        },
+                      );
+                    },
+                  ),
+                  SpaceHeight(20.h),
+                  BlocConsumer<OrderBloc, OrderState>(
+                    listener: (context, state) {
+                      state.maybeWhen(
+                        orElse: () {},
+                        
+                      );
+                    },
+                    builder: (context, state) {
+                      return Button.filled(
+                        onPressed: () {},
+                        label: 'Bayar Sekarang',
+                      );
+                    },
+                  )
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

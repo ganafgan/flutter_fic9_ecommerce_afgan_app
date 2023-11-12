@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ecommerce/common/components/space_height.dart';
 import 'package:flutter_ecommerce/common/constants/colors.dart';
+import 'package:flutter_ecommerce/common/extensions/int_ext.dart';
+import 'package:flutter_ecommerce/data/model/responses/products_response_model.dart';
 
 import 'package:flutter_ecommerce/presentation/home/product_model.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -14,7 +16,7 @@ class ProductInfoWidget extends StatefulWidget {
     required this.onWishListTap,
   }) : super(key: key);
   final EdgeInsetsGeometry padding;
-  final ProductModel product;
+  final Product product;
   final void Function(bool isWishList) onWishListTap;
 
   @override
@@ -34,7 +36,7 @@ class _ProductInfoWidgetState extends State<ProductInfoWidget> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                widget.product.name,
+                widget.product.attributes.name,
                 style: TextStyle(
                   fontSize: 20.sp,
                   fontWeight: FontWeight.w700,
@@ -66,7 +68,7 @@ class _ProductInfoWidgetState extends State<ProductInfoWidget> {
         Padding(
           padding: widget.padding,
           child: Text(
-            widget.product.priceFormat,
+            int.parse(widget.product.attributes.price).currencyFormatRp,
             style: TextStyle(
               fontSize: 20.sp,
               color: ColorName.primary,

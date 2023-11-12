@@ -1,16 +1,27 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_ecommerce/common/components/button.dart';
+import 'package:flutter_ecommerce/common/components/header_title.dart';
 import 'package:flutter_ecommerce/common/components/space_height.dart';
 import 'package:flutter_ecommerce/common/constants/colors.dart';
-import 'package:flutter_ecommerce/common/constants/images.dart';
-import 'package:flutter_ecommerce/presentation/home/product_model.dart';
+import 'package:flutter_ecommerce/common/constants/images.dart' as localImages;
+import 'package:flutter_ecommerce/common/constants/variables.dart';
+import 'package:flutter_ecommerce/data/model/responses/products_response_model.dart';
+import 'package:flutter_ecommerce/presentation/cart/bloc/cart/cart_bloc.dart';
+import 'package:flutter_ecommerce/presentation/cart/cart_page.dart';
+import 'package:flutter_ecommerce/presentation/cart/widget/cart_model.dart';
 import 'package:flutter_ecommerce/presentation/home/widget/image_slider.dart';
 import 'package:flutter_ecommerce/presentation/product_detail/widget/product_description_widget.dart';
 import 'package:flutter_ecommerce/presentation/product_detail/widget/product_info_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ProductDetailPage extends StatefulWidget {
-  const ProductDetailPage({super.key});
+  const ProductDetailPage({
+    Key? key,
+    required this.product,
+  }) : super(key: key);
+  final Product product;
 
   @override
   State<ProductDetailPage> createState() => _ProductDetailPageState();
@@ -18,9 +29,9 @@ class ProductDetailPage extends StatefulWidget {
 
 class _ProductDetailPageState extends State<ProductDetailPage> {
   final List<String> images = [
-    Images.recomendedProductBanner,
-    Images.recomendedProductBanner,
-    Images.recomendedProductBanner,
+    localImages.Images.recomendedProductBanner,
+    localImages.Images.recomendedProductBanner,
+    localImages.Images.recomendedProductBanner,
   ];
   EdgeInsets padding = EdgeInsets.symmetric(horizontal: 16.w);
 
@@ -38,41 +49,26 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             ListView(
               children: [
                 SpaceHeight(10.h),
-                Row(
-                  children: [
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(
-                        Icons.arrow_back_ios,
-                      ),
-                    ),
-                    const Text(
-                      'Detail Produk',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    )
-                  ],
+                HeaderBack(
+                  title: 'Produk Detail',
+                  onBack: () {},
                 ),
+                SpaceHeight(5.h),
                 ImageSlider(
-                  items: images,
+                  items: [
+                    '${Variables.baseUrl}${widget.product.attributes.images.data[0].attributes.url}',
+                  ],
                 ),
                 SpaceHeight(16.h),
                 ProductInfoWidget(
                   padding: padding,
-                  product: ProductModel(
-                    images: images,
-                    name: 'Nike Air Jordan',
-                    price: 2350000,
-                  ),
+                  product: widget.product,
                   onWishListTap: (isWishList) {},
                 ),
                 SpaceHeight(10.h),
                 ProductDescriptionWidget(
                   padding: padding,
-                  description:
-                      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquet arcu id tincidunt tellus arcu rhoncus, turpis nisl sed. Neque viverra ipsum orci, morbi semper. Nulla bibendum purus tempor semper purus. Ut curabitur platea sed blandit. Amet non at proin justo nulla et. A, blandit morbi suspendisse vel malesuada purus massa mi. Faucibus neque a mi hendrerit.',
+                  description: widget.product.attributes.description,
                 ),
                 SpaceHeight(10.h),
               ],
@@ -97,7 +93,22 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   children: [
                     Flexible(
                       child: Button.filled(
-                        onPressed: () {},
+                        onPressed: () {
+                          context.read<CartBloc>().add(
+                                CartEvent.add(
+                                  CartModel(
+                                      product: widget.product, quantity: 1)
+                                ),
+                              );
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return const CartPage();
+                              },
+                            ),
+                          );
+                        },
                         label: 'Add to Cart',
                       ),
                     ),
@@ -118,7 +129,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       ),
 
       /* membuat container selalu dibawah */
-      
+
       // bottomNavigationBar: Container(
       //   padding: EdgeInsets.all(16.w),
       //   decoration: BoxDecoration(

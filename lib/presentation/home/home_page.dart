@@ -4,13 +4,13 @@ import 'package:flutter_ecommerce/common/components/search_input.dart';
 import 'package:flutter_ecommerce/common/components/space_height.dart';
 import 'package:flutter_ecommerce/common/constants/colors.dart';
 import 'package:flutter_ecommerce/common/constants/images.dart';
-import 'package:flutter_ecommerce/presentation/cart/cart_page.dart';
 import 'package:flutter_ecommerce/presentation/home/bloc/products/products_bloc.dart';
-import 'package:flutter_ecommerce/presentation/home/product_model.dart';
 import 'package:flutter_ecommerce/presentation/home/widget/category_button.dart';
+import 'package:flutter_ecommerce/presentation/home/widget/header_home.dart';
 import 'package:flutter_ecommerce/presentation/home/widget/image_slider.dart';
 import 'package:flutter_ecommerce/presentation/home/widget/product_card.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -51,68 +51,7 @@ class _HomePageState extends State<HomePage> {
         padding: const EdgeInsets.all(16),
         children: [
           SpaceHeight(20.h),
-          Row(
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Alamat pengiriman',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: ColorName.grey,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      const Text(
-                        'Bandung, Jawa Barat',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: ColorName.primary,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      SpaceWidth(5.w),
-                      const Icon(
-                        Icons.expand_more,
-                        size: 18,
-                        color: ColorName.primary,
-                      )
-                    ],
-                  )
-                ],
-              ),
-              const Spacer(),
-              Row(
-                children: [
-                  IconButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return const CartPage();
-                          },
-                        ),
-                      );
-                    },
-                    icon: Image.asset(
-                      Images.iconBuy,
-                      height: 24,
-                    ),
-                  ),
-                  IconButton(
-                      onPressed: () {},
-                      icon: Image.asset(
-                        Images.iconNotificationHome,
-                        height: 24,
-                      ))
-                ],
-              )
-            ],
-          ),
+          const HeaderHome(),
           SpaceHeight(16.h),
           SearchInput(
             controller: searchController,
@@ -122,6 +61,7 @@ class _HomePageState extends State<HomePage> {
           ImageSlider(
             items: images,
             isRounded: true,
+            isAsset: true,
           ),
           SpaceHeight(12.h),
           Text(
@@ -205,7 +145,7 @@ class _HomePageState extends State<HomePage> {
                     itemCount: data.data.length,
                     itemBuilder: (context, index) {
                       return ProductCard(
-                        data: data.data[index],
+                        product: data.data[index],
                       );
                     },
                   );

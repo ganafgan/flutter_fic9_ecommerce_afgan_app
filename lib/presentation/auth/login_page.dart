@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_ecommerce/common/components/button.dart';
 import 'package:flutter_ecommerce/common/components/custom_text_field.dart';
+import 'package:flutter_ecommerce/common/components/show_message.dart';
 import 'package:flutter_ecommerce/common/components/space_height.dart';
 import 'package:flutter_ecommerce/common/constants/colors.dart';
 import 'package:flutter_ecommerce/common/constants/images.dart';
@@ -25,7 +26,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void dispose() {
-   
     emaileController.dispose();
     passwordController.dispose();
     super.dispose();
@@ -99,19 +99,15 @@ class _LoginPageState extends State<LoginPage> {
                         },
                       ),
                     );
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Login Success'),
-                        backgroundColor: Colors.green,
-                      ),
+                    ShowMessage.success(
+                      ctx: context,
+                      message: 'Login Success',
                     );
                   },
                   error: (message) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(message),
-                        backgroundColor: Colors.red,
-                      ),
+                    ShowMessage.error(
+                      ctx: context,
+                      message: message,
                     );
                   },
                 );

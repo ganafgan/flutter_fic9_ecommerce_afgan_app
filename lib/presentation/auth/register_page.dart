@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_ecommerce/common/components/button.dart';
 import 'package:flutter_ecommerce/common/components/custom_text_field.dart';
+import 'package:flutter_ecommerce/common/components/show_message.dart';
 import 'package:flutter_ecommerce/common/components/space_height.dart';
 import 'package:flutter_ecommerce/common/constants/colors.dart';
 import 'package:flutter_ecommerce/common/constants/images.dart';
 import 'package:flutter_ecommerce/data/model/requests/register_request_model.dart';
 import 'package:flutter_ecommerce/presentation/auth/bloc/register/register_bloc.dart';
 import 'package:flutter_ecommerce/presentation/auth/login_page.dart';
-import 'package:flutter_ecommerce/presentation/home/dashboard_page.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -26,7 +26,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     emailController.dispose();
     nameController.dispose();
     passwordController.dispose();
@@ -103,19 +102,15 @@ class _RegisterPageState extends State<RegisterPage> {
                       },
                     ),
                   );
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Register Success'),
-                      backgroundColor: Colors.green,
-                    ),
+                  ShowMessage.success(
+                    ctx: context,
+                    message: 'Register Success',
                   );
                 },
                 error: (message) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(message),
-                      backgroundColor: Colors.red,
-                    ),
+                  ShowMessage.error(
+                    ctx: context,
+                    message: message,
                   );
                 },
               );

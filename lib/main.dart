@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_ecommerce/data/datasource/auth_local_datasource.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_ecommerce/presentation/auth/bloc/login/login_bloc.dart';
 import 'package:flutter_ecommerce/presentation/auth/bloc/register/register_bloc.dart';
-import 'package:flutter_ecommerce/presentation/auth/login_page.dart';
-import 'package:flutter_ecommerce/presentation/auth/register_page.dart';
 import 'package:flutter_ecommerce/presentation/auth/splash_page.dart';
+import 'package:flutter_ecommerce/presentation/cart/bloc/cart/cart_bloc.dart';
+import 'package:flutter_ecommerce/presentation/cart/bloc/order/order_bloc.dart';
 import 'package:flutter_ecommerce/presentation/home/bloc/products/products_bloc.dart';
-import 'package:flutter_ecommerce/presentation/home/dashboard_page.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
   runApp(const MyApp());
@@ -34,6 +32,12 @@ class MyApp extends StatelessWidget {
             ),
             BlocProvider(
               create: (context) => ProductsBloc(),
+            ),
+            BlocProvider(
+              create: (context) => CartBloc(),
+            ),
+            BlocProvider(
+              create: (context) => OrderBloc(),
             ),
           ],
           child: MaterialApp(

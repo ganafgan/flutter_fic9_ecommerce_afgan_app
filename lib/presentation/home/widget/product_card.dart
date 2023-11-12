@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_ecommerce/common/components/button.dart';
 import 'package:flutter_ecommerce/common/components/space_height.dart';
 import 'package:flutter_ecommerce/common/constants/colors.dart';
 import 'package:flutter_ecommerce/common/constants/variables.dart';
 import 'package:flutter_ecommerce/common/extensions/int_ext.dart';
 import 'package:flutter_ecommerce/data/model/responses/products_response_model.dart';
+import 'package:flutter_ecommerce/presentation/cart/bloc/cart/cart_bloc.dart';
+import 'package:flutter_ecommerce/presentation/cart/widget/cart_model.dart';
 
 import 'package:flutter_ecommerce/presentation/home/product_model.dart';
 import 'package:flutter_ecommerce/presentation/product_detail/product_detail_page.dart';
@@ -13,24 +17,21 @@ import 'package:intl/intl.dart';
 class ProductCard extends StatelessWidget {
   const ProductCard({
     Key? key,
-    required this.data,
+    required this.product,
   }) : super(key: key);
 
-  final Product data;
+  final Product product;
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //   SnackBar(
-        //     content: Text('Product is ${data.name}'),
-        //   ),
-        // );
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) {
-              return const ProductDetailPage();
+              return ProductDetailPage(
+                product: product,
+              );
             },
           ),
         );
@@ -59,28 +60,45 @@ class ProductCard extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(10.w),
                 child: Image.network(
-                  '${Variables.baseUrl}${data.attributes.images.data[0].attributes.url}',
+                  '${Variables.baseUrl}${product.attributes.images.data[0].attributes.url}',
                   height: 110.h,
                   width: double.infinity,
                   fit: BoxFit.cover,
                 ),
               ),
               SpaceHeight(14.h),
-              Flexible(
-                child: Text(
-                  data.attributes.name,
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w400,
-                  ),
+              Text(
+                product.attributes.name,
+                style: TextStyle(
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w400,
                 ),
               ),
-              SpaceHeight(15.h),
               Text(
-                int.parse(data.attributes.price).currencyFormatRp,
+                int.parse(product.attributes.price).currencyFormatRp,
                 style: TextStyle(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
+                ),
+              ),
+              SpaceHeight(10.h),
+              Flexible(
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Button.filled(
+                    width: 50,
+                    label: '+',
+                    onPressed: () {
+                      context.read<CartBloc>().add(
+                            CartEvent.add(
+                              CartModel(
+                                product: product,
+                                quantity: 1,
+                              ),
+                            ),
+                          );
+                    },
+                  ),
                 ),
               )
             ],

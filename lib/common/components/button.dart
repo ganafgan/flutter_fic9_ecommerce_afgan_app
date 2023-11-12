@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ecommerce/common/components/space_height.dart';
 import 'package:flutter_ecommerce/common/constants/colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 enum ButtonStyle { filled, outlined }
 
@@ -26,7 +27,7 @@ class Button extends StatelessWidget {
     this.textColor = Colors.white,
     this.width = double.infinity,
     this.height = 50.0,
-    this.borderRadius = 6.0,
+    this.borderRadius = 6,
     this.icon,
     this.disabled = false,
     this.fontSize = 16.0,

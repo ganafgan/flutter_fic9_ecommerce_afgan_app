@@ -11,9 +11,11 @@ class ImageSlider extends StatefulWidget {
     Key? key,
     required this.items,
     this.isRounded = false,
+    this.isAsset = false,
   }) : super(key: key);
   final List<String> items;
   final bool isRounded;
+  final bool isAsset;
 
   @override
   State<ImageSlider> createState() => _ImageSliderState();
@@ -31,13 +33,22 @@ class _ImageSliderState extends State<ImageSlider> {
         CarouselSlider(
           items: widget.items.map((e) {
             return ClipRRect(
-              borderRadius: widget.isRounded ? BorderRadius.circular(8.w) : BorderRadius.zero,
-              child: Image.asset(
-                e,
-                height: 206,
-                width: MediaQuery.of(context).size.width,
-                fit: BoxFit.cover,
-              ),
+              borderRadius: widget.isRounded
+                  ? BorderRadius.circular(8.w)
+                  : BorderRadius.zero,
+              child: !widget.isAsset
+                  ? Image.network(
+                      e,
+                      height: 206,
+                      width: MediaQuery.of(context).size.width,
+                      fit: BoxFit.cover,
+                    )
+                  : Image.asset(
+                      e,
+                      height: 206,
+                      width: MediaQuery.of(context).size.width,
+                      fit: BoxFit.cover,
+                    ),
             );
           }).toList(),
           options: CarouselOptions(
