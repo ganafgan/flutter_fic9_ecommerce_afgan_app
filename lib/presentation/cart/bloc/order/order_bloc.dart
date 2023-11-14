@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter_ecommerce/data/datasource/order_remote_datasource.dart';
 import 'package:flutter_ecommerce/data/model/requests/order_request_model.dart';
+import 'package:flutter_ecommerce/data/model/responses/order_detail_response_model.dart';
 import 'package:flutter_ecommerce/data/model/responses/order_response_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 

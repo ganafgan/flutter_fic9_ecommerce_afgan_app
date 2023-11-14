@@ -1,17 +1,19 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:dartz/dartz_unsafe.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_ecommerce/common/components/button.dart';
 import 'package:flutter_ecommerce/common/components/custom_dropdown.dart';
 import 'package:flutter_ecommerce/common/components/header_title.dart';
 import 'package:flutter_ecommerce/common/components/row_text.dart';
+import 'package:flutter_ecommerce/common/components/show_message.dart';
 import 'package:flutter_ecommerce/common/components/space_height.dart';
 import 'package:flutter_ecommerce/common/constants/colors.dart';
 import 'package:flutter_ecommerce/common/extensions/int_ext.dart';
+import 'package:flutter_ecommerce/data/model/requests/order_request_model.dart';
 import 'package:flutter_ecommerce/presentation/cart/bloc/cart/cart_bloc.dart';
 import 'package:flutter_ecommerce/presentation/cart/bloc/order/order_bloc.dart';
 import 'package:flutter_ecommerce/presentation/cart/widget/cart_tile.dart';
+import 'package:flutter_ecommerce/presentation/payment/payment_page.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CartPage extends StatefulWidget {
@@ -62,6 +64,9 @@ class _CartPageState extends State<CartPage> {
   //       .read<CartBloc>()
   //       .add(CartEvent.add(CartModel(product: widget.product, quantity: 1)));
   // }
+
+  List<Item> items = [];
+  int localTotalPrice = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -240,7 +245,7 @@ class _CartPageState extends State<CartPage> {
                           );
                         },
                         success: (carts) {
-                          int total = 0;
+                          int totalPrice = 0;
                           /* cara 1 */
                           // for (var cart in carts) {
                           //   totalPrice += (cart.quantity * int.parse(cart.product.attributes.price));
@@ -249,14 +254,30 @@ class _CartPageState extends State<CartPage> {
                           /* cara 2 */
                           carts.forEach(
                             (element) {
-                              total += (element.quantity *
+                              totalPrice += (element.quantity *
                                   int.parse(element.product.attributes.price));
                             },
                           );
 
+                          /* 
+                            tidak perlu menambahkan setState 
+                            karena blocBuilder otomatis akan
+                            membangun ulang widget
+                          */
+                          localTotalPrice = totalPrice;
+
+                          items = carts.map((e) {
+                            return Item(
+                              id: e.product.id,
+                              productName: e.product.attributes.name,
+                              price: int.parse(e.product.attributes.price),
+                              qty: e.quantity,
+                            );
+                          }).toList();
+
                           return RowText(
                             label: 'Total Harga',
-                            value: total.currencyFormatRp,
+                            value: totalPrice.currencyFormatRp,
                           );
                         },
                       );
@@ -301,13 +322,57 @@ class _CartPageState extends State<CartPage> {
                     listener: (context, state) {
                       state.maybeWhen(
                         orElse: () {},
-                        
+                        success: (response) {
+                          context.read<CartBloc>().add(const CartEvent.clear());
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return PaymentPage(
+                                  invoiceUrl: response.invoiceUrl,
+                                  orderId: response.externalId,
+                                );
+                              },
+                            ),
+                          );
+                        },
+                        error: (error) {
+                          ShowMessage.error(
+                            ctx: context,
+                            message: error,
+                          );
+                        },
                       );
                     },
                     builder: (context, state) {
-                      return Button.filled(
-                        onPressed: () {},
-                        label: 'Bayar Sekarang',
+                      return state.maybeWhen(
+                        orElse: () {
+                          return Button.filled(
+                            onPressed: () {
+                              context.read<OrderBloc>().add(
+                                    OrderEvent.Order(
+                                      OrderRequestModel(
+                                        data: Data(
+                                          items: items,
+                                          totalPrice: localTotalPrice,
+                                          deliveryAddress:
+                                              'Bandung, Jawa Barat',
+                                          courierName: 'JNE',
+                                          courierPrice: 15000,
+                                          status: 'waiting-payment',
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                            },
+                            label: 'Bayar Sekarang',
+                          );
+                        },
+                        loading: () {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        },
                       );
                     },
                   )

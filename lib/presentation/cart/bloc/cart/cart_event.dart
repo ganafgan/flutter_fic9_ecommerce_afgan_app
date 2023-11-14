@@ -6,5 +6,5 @@ class CartEvent with _$CartEvent {
   const factory CartEvent.add(CartModel cart) = _Add;
   const factory CartEvent.remove(CartModel cart) = _Remove;
   const factory CartEvent.delete(CartModel cart) = _Delete;
-
+  const factory CartEvent.clear() = _Clear;
 }

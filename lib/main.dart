@@ -6,6 +6,7 @@ import 'package:flutter_ecommerce/presentation/auth/splash_page.dart';
 import 'package:flutter_ecommerce/presentation/cart/bloc/cart/cart_bloc.dart';
 import 'package:flutter_ecommerce/presentation/cart/bloc/order/order_bloc.dart';
 import 'package:flutter_ecommerce/presentation/home/bloc/products/products_bloc.dart';
+import 'package:flutter_ecommerce/presentation/payment/bloc/order_detail/order_detail_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void main() {
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
           providers: [
             BlocProvider(
               create: (context) => RegisterBloc(),
-            ),
+          ),
             BlocProvider(
               create: (context) => LoginBloc(),
             ),
@@ -38,6 +39,9 @@ class MyApp extends StatelessWidget {
             ),
             BlocProvider(
               create: (context) => OrderBloc(),
+            ),
+            BlocProvider(
+              create: (context) => OrderDetailBloc(),
             ),
           ],
           child: MaterialApp(

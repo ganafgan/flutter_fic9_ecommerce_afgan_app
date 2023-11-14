@@ -70,5 +70,10 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         emit(_Success(updateCarts));
       }
     });
+
+    on<_Clear>((event, emit) {
+      emit(const _Loading());
+      emit(const _Success([]));
+    });
   }
 }

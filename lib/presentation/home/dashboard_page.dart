@@ -22,7 +22,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
   List<Widget> pages = [
     const HomePage(),
-    const PaymentPage(),
+    const ExplorePage(),
     const CartPage(),
     const AccountPage(),
   ];
