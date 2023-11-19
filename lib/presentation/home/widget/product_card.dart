@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_ecommerce/common/components/button.dart';
@@ -8,11 +9,8 @@ import 'package:flutter_ecommerce/common/extensions/int_ext.dart';
 import 'package:flutter_ecommerce/data/model/responses/products_response_model.dart';
 import 'package:flutter_ecommerce/presentation/cart/bloc/cart/cart_bloc.dart';
 import 'package:flutter_ecommerce/presentation/cart/widget/cart_model.dart';
-
-import 'package:flutter_ecommerce/presentation/home/product_model.dart';
 import 'package:flutter_ecommerce/presentation/product_detail/product_detail_page.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/intl.dart';
 
 class ProductCard extends StatelessWidget {
   const ProductCard({
@@ -59,8 +57,21 @@ class ProductCard extends StatelessWidget {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(10.w),
-                child: Image.network(
-                  '${Variables.baseUrl}${product.attributes.images.data[0].attributes.url}',
+                child: CachedNetworkImage(
+                  imageUrl:
+                      '${Variables.baseUrl}${product.attributes.images.data[0].attributes.url}',
+                  placeholder: (context, url) {
+                    return SizedBox(
+                      height: 50.h,
+                      width: 50.w,
+                      child: const CircularProgressIndicator(
+                        strokeWidth: 2,
+                      ),
+                    );
+                  },
+                  errorWidget: (context, url, error) {
+                    return const Icon(Icons.error);
+                  },
                   height: 110.h,
                   width: double.infinity,
                   fit: BoxFit.cover,

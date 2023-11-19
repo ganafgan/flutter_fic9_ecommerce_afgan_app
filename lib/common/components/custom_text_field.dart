@@ -30,14 +30,18 @@ class _CustomTextFieldState extends State<CustomTextField> {
       obscureText: widget.obsecureText && !showPassword,
       decoration: InputDecoration(
         labelText: widget.label,
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: 10.w,
+          vertical: 10.h,
+        ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(6),
+          borderRadius: BorderRadius.circular(6.w),
           borderSide: const BorderSide(
             color: ColorName.grey,
           ),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(6),
+          borderRadius: BorderRadius.circular(6.w),
           borderSide: const BorderSide(
             color: ColorName.grey,
           ),

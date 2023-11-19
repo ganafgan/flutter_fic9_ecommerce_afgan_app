@@ -13,7 +13,9 @@ import 'package:flutter_ecommerce/data/model/requests/order_request_model.dart';
 import 'package:flutter_ecommerce/presentation/cart/bloc/cart/cart_bloc.dart';
 import 'package:flutter_ecommerce/presentation/cart/bloc/order/order_bloc.dart';
 import 'package:flutter_ecommerce/presentation/cart/widget/cart_tile.dart';
+import 'package:flutter_ecommerce/presentation/home/dashboard_page.dart';
 import 'package:flutter_ecommerce/presentation/payment/payment_page.dart';
+import 'package:flutter_ecommerce/presentation/shipping_address/shipping_address_page.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CartPage extends StatefulWidget {
@@ -81,38 +83,7 @@ class _CartPageState extends State<CartPage> {
               isBack: false,
             ),
             SpaceHeight(16.h),
-            // if (carts.isEmpty)
-            //   Center(
-            //     child: Padding(
-            //       padding: EdgeInsets.only(
-            //         top: MediaQuery.of(context).size.height * 0.3,
-            //       ),
-            //       child: Column(
-            //         children: [
-            //           const Icon(
-            //             Icons.add_shopping_cart,
-            //             size: 100,
-            //             color: ColorName.primary,
-            //           ),
-            //           SpaceHeight(10.h),
-            //           Text(
-            //             'Oooooppps \nKeranjang anda kosong',
-            //             style: TextStyle(
-            //               fontSize: 14.sp,
-            //               fontWeight: FontWeight.w500,
-            //             ),
-            //             textAlign: TextAlign.center,
-            //           ),
-            //           SpaceHeight(20.h),
-            //           Button.filled(
-            //             onPressed: () {},
-            //             label: 'Cari barang',
-            //             width: 200.w,
-            //           )
-            //         ],
-            //       ),
-            //     ),
-            //   ),
+
             BlocBuilder<CartBloc, CartState>(
               builder: (context, state) {
                 return state.maybeWhen(
@@ -122,31 +93,82 @@ class _CartPageState extends State<CartPage> {
                     );
                   },
                   success: (carts) {
-                    return ListView.separated(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      separatorBuilder: (context, index) {
-                        return SpaceHeight(10.h);
-                      },
-                      itemCount: carts.length,
-                      itemBuilder: (context, index) {
-                        return CartItemWidget(
-                          data: carts[index],
-                        );
-                      },
-                    );
+                    if (carts.isEmpty) {
+                      return Center(
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                            top: MediaQuery.of(context).size.height * 0.3,
+                          ),
+                          child: Column(
+                            children: [
+                              const Icon(
+                                Icons.add_shopping_cart,
+                                size: 100,
+                                color: ColorName.primary,
+                              ),
+                              SpaceHeight(10.h),
+                              Text(
+                                'Oooooppps \nKeranjang anda kosong',
+                                style: TextStyle(
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              SpaceHeight(20.h),
+                              Button.filled(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) {
+                                        return const DashboardPage();
+                                      },
+                                    ),
+                                  );
+                                },
+                                label: 'Cari barang',
+                                width: 200.w,
+                              )
+                            ],
+                          ),
+                        ),
+                      );
+                    } else {
+                      return ListView.separated(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        separatorBuilder: (context, index) {
+                          return SpaceHeight(10.h);
+                        },
+                        itemCount: carts.length,
+                        itemBuilder: (context, index) {
+                          return CartItemWidget(
+                            data: carts[index],
+                          );
+                        },
+                      );
+                    }
                   },
                 );
               },
             ),
             SpaceHeight(16.h),
             /* button for choosing shipping address */
-            // if (carts.isNotEmpty)
 
             Container(
-              margin: EdgeInsets.symmetric(horizontal: 40.w),
+              margin: EdgeInsets.symmetric(horizontal: 16.w),
               child: Button.filled(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return const ShippingAddressPage();
+                      },
+                    ),
+                  );
+                },
                 label: 'Pilih Alamat Pengiriman',
               ),
             ),

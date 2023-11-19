@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ecommerce/common/components/space_height.dart';
 import 'package:flutter_ecommerce/common/constants/colors.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 enum ButtonStyle { filled, outlined }
 
