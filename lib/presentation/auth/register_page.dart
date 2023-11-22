@@ -93,7 +93,11 @@ class _RegisterPageState extends State<RegisterPage> {
             listener: (context, state) {
               state.maybeWhen(
                 orElse: () {},
+                loading: () {
+                  ShowMessage.loading(ctx: context);
+                },
                 success: (data) {
+                  Navigator.pop(context);
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -108,6 +112,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   );
                 },
                 error: (message) {
+                  Navigator.pop(context);
                   ShowMessage.error(
                     ctx: context,
                     message: message,
@@ -131,11 +136,6 @@ class _RegisterPageState extends State<RegisterPage> {
                           .add(RegisterEvent.register(data: data));
                     },
                     label: 'Daftar',
-                  );
-                },
-                loading: () {
-                  return const Center(
-                    child: CircularProgressIndicator(),
                   );
                 },
               );

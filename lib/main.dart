@@ -7,7 +7,10 @@ import 'package:flutter_ecommerce/presentation/cart/bloc/cart/cart_bloc.dart';
 import 'package:flutter_ecommerce/presentation/cart/bloc/order/order_bloc.dart';
 import 'package:flutter_ecommerce/presentation/home/bloc/products/products_bloc.dart';
 import 'package:flutter_ecommerce/presentation/payment/bloc/order_detail/order_detail_bloc.dart';
+import 'package:flutter_ecommerce/presentation/shipping_address/bloc/address/address_bloc.dart';
+import 'package:flutter_ecommerce/presentation/shipping_address/bloc/city/city_bloc.dart';
 import 'package:flutter_ecommerce/presentation/shipping_address/bloc/province/province_bloc.dart';
+import 'package:flutter_ecommerce/presentation/shipping_address/bloc/subdistrict/subdistrict_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void main() {
@@ -28,7 +31,7 @@ class MyApp extends StatelessWidget {
           providers: [
             BlocProvider(
               create: (context) => RegisterBloc(),
-          ),
+            ),
             BlocProvider(
               create: (context) => LoginBloc(),
             ),
@@ -46,6 +49,15 @@ class MyApp extends StatelessWidget {
             ),
             BlocProvider(
               create: (context) => ProvinceBloc(),
+            ),
+            BlocProvider(
+              create: (context) => CityBloc(),
+            ),
+            BlocProvider(
+              create: (context) => SubdistrictBloc(),
+            ),
+            BlocProvider(
+              create: (context) => AddressBloc(),
             ),
           ],
           child: MaterialApp(

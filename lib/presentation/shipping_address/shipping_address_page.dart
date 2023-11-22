@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_ecommerce/common/components/button.dart';
 import 'package:flutter_ecommerce/common/components/header_title.dart';
 import 'package:flutter_ecommerce/common/components/show_message.dart';
 import 'package:flutter_ecommerce/common/components/space_height.dart';
 import 'package:flutter_ecommerce/common/constants/colors.dart';
 import 'package:flutter_ecommerce/presentation/shipping_address/add_address_page.dart';
+import 'package:flutter_ecommerce/presentation/shipping_address/bloc/address/address_bloc.dart';
 import 'package:flutter_ecommerce/presentation/shipping_address/edit_address_page.dart';
-import 'package:flutter_ecommerce/presentation/shipping_address/model/address_model.dart';
 import 'package:flutter_ecommerce/presentation/shipping_address/widget/address_tile.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -20,18 +21,15 @@ class ShippingAddressPage extends StatefulWidget {
 class _ShippingAddressPageState extends State<ShippingAddressPage> {
   final ValueNotifier<int> selectedIndex = ValueNotifier(1);
   ValueNotifier<int> count = ValueNotifier(1);
-  final List<AddressModel> addresses = [
-    AddressModel(
-      name: 'Afgan',
-      address: 'Jl. Cemara no.37',
-      phoneNumber: '087824140294',
-    ),
-    AddressModel(
-      name: 'Taufiq',
-      address: 'Jl. Bungur no.26',
-      phoneNumber: '087824140294',
-    )
-  ];
+
+  // int idAddress = 0;
+  int? idAddress;
+
+  @override
+  void initState() {
+    context.read<AddressBloc>().add(const AddressEvent.getAddress());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,83 +58,74 @@ class _ShippingAddressPageState extends State<ShippingAddressPage> {
                 );
               },
             ),
-            addresses.isEmpty
-                ? Center(
-                    child: Padding(
-                      padding: EdgeInsets.only(top: 200.h),
-                      child: Column(
-                        children: [
-                          Icon(
-                            Icons.home,
-                            size: 50.w,
-                            color: ColorName.primary,
-                          ),
-                          SpaceHeight(10.h),
-                          Text(
-                            'Opppssss.... \nAlamat belum tersedia',
-                            style: TextStyle(
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          SpaceHeight(20.h),
-                          Button.filled(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) {
-                                    return const AddAddressPage();
-                                  },
-                                ),
-                              );
-                            },
-                            label: 'Tambah Alamat',
-                            width: 200.w,
-                          )
-                        ],
-                      ),
-                    ),
-                  )
-                : ValueListenableBuilder(
-                    valueListenable: selectedIndex,
-                    builder: (context, value, child) {
-                      return ListView.separated(
-                        padding: EdgeInsets.all(16.w),
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        separatorBuilder: (context, index) => SpaceHeight(10.h),
-                        itemCount: addresses.length,
-                        itemBuilder: (context, index) {
-                          return AddressTile(
-                            isSelected: value == index,
-                            data: addresses[index],
-                            onTap: () {
-                              selectedIndex.value = index;
-                            },
-                            onEditTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) {
-                                    return const EditAddressPage();
-                                  },
-                                ),
-                              );
-                            },
-                            onDeleteTap: () {
-                              ShowMessage.success(
-                                ctx: context,
-                                message: 'Alamat Terhapus',
-                              );
-                            },
-                          );
-                        },
-                      );
-                    },
-                  ),
+            BlocBuilder<AddressBloc, AddressState>(
+              builder: (context, state) {
+                return state.maybeWhen(
+                  orElse: () {
+                    return const Center(
+                      child: Text('No Data'),
+                    );
+                  },
+                  getSuccess: (response) {
+                    return ListView.separated(
+                      padding: EdgeInsets.all(16.w),
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      separatorBuilder: (context, index) => SpaceHeight(10.h),
+                      itemCount: response.data.length,
+                      itemBuilder: (context, index) {
+                        return AddressTile(
+                          isSelected: idAddress == response.data[index].id,
+                          data: response.data[index],
+                          onTap: () {
+                            setState(() {
+                              idAddress = response.data[index].id;
+                            });
+                          },
+                          onEditTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return const EditAddressPage();
+                                },
+                              ),
+                            );
+                          },
+                          onDeleteTap: () {
+                            ShowMessage.success(
+                              ctx: context,
+                              message: 'Alamat Terhapus',
+                            );
+                          },
+                        );
+                      },
+                    );
+                  },
+                );
+              },
+            ),
           ],
+        ),
+      ),
+      bottomNavigationBar: Container(
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+        decoration: const BoxDecoration(
+          color: ColorName.white,
+          border: Border(
+            top: BorderSide(
+              color: ColorName.border,
+              width: 2.0,
+            ),
+          ),
+        ),
+        child: Button.filled(
+          disabled: idAddress == null,
+          onPressed: () {
+            /* melempar data/parameter ke halaman lain */
+            Navigator.pop(context, idAddress);
+          },
+          label: 'Pilih',
         ),
       ),
     );

@@ -15,6 +15,7 @@ import 'package:flutter_ecommerce/presentation/cart/bloc/order/order_bloc.dart';
 import 'package:flutter_ecommerce/presentation/cart/widget/cart_tile.dart';
 import 'package:flutter_ecommerce/presentation/home/dashboard_page.dart';
 import 'package:flutter_ecommerce/presentation/payment/payment_page.dart';
+import 'package:flutter_ecommerce/presentation/shipping_address/bloc/address/address_bloc.dart';
 import 'package:flutter_ecommerce/presentation/shipping_address/shipping_address_page.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -69,6 +70,13 @@ class _CartPageState extends State<CartPage> {
 
   List<Item> items = [];
   int localTotalPrice = 0;
+  int idAddress = 0;
+
+  @override
+  void initState() {
+    context.read<AddressBloc>().add(const AddressEvent.getAddress());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +91,6 @@ class _CartPageState extends State<CartPage> {
               isBack: false,
             ),
             SpaceHeight(16.h),
-
             BlocBuilder<CartBloc, CartState>(
               builder: (context, state) {
                 return state.maybeWhen(
@@ -159,8 +166,9 @@ class _CartPageState extends State<CartPage> {
             Container(
               margin: EdgeInsets.symmetric(horizontal: 16.w),
               child: Button.filled(
-                onPressed: () {
-                  Navigator.push(
+                onPressed: () async {
+                  /* menampung data/param dari halaman lain */
+                  final result = await Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) {
@@ -168,66 +176,102 @@ class _CartPageState extends State<CartPage> {
                       },
                     ),
                   );
+
+                  /* pastikan tidak null agar bisa digunakans */
+                  if (result != null) {
+                    setState(() {
+                      idAddress = result;
+                    });
+                  }
                 },
                 label: 'Pilih Alamat Pengiriman',
               ),
             ),
             SpaceHeight(16.h),
             // if (carts.isNotEmpty)
-            Container(
-              padding: EdgeInsets.all(16.w),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(5.w),
-                border: Border.all(color: ColorName.border),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Alamat pengiriman',
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  SpaceHeight(16.h),
-                  Text(
-                    'Nama Lengkap',
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w400,
-                      color: ColorName.grey,
-                    ),
-                  ),
-                  SpaceHeight(8.h),
-                  Text(
-                    'Alamat Lengkap',
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w400,
-                      color: ColorName.grey,
-                    ),
-                  ),
-                  SpaceHeight(8.h),
-                  Text(
-                    'Kota, Provinsi, Kode Pos',
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w400,
-                      color: ColorName.grey,
-                    ),
-                  ),
-                  SpaceHeight(8.h),
-                  Text(
-                    'No Handphone',
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w400,
-                      color: ColorName.grey,
-                    ),
-                  ),
-                ],
-              ),
+            BlocBuilder<AddressBloc, AddressState>(
+              builder: (context, state) {
+                return state.maybeWhen(
+                  orElse: () {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  },
+                  getSuccess: (response) {
+                    /* cara 1, cari list yang ada isDefault nya true */
+                    // final defaultAddress = response.data.where(
+                    //   (element) => element.attributes.isDefault == true,
+                    // );
+
+                    /* cara 2, cari list yang ada isDefault nya true */
+                    // final defaultAddress = response.data.firstWhere(
+                    //   (element) => element.attributes.isDefault == true,
+                    //   orElse: () => response.data.first,
+                    // );
+                    final defaultAddress = idAddress != 0
+                        ? response.data.firstWhere(
+                            (element) => element.id == idAddress,
+                            orElse: () => response.data.first,
+                          )
+                        : response.data.last;
+
+                    if (response.data.isEmpty) {
+                      return const Center(
+                        child: Text(
+                          'Alamat Belum Tersedia',
+                        ),
+                      );
+                    }
+
+                    return Container(
+                      padding: EdgeInsets.all(16.w),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5.w),
+                        border: Border.all(color: ColorName.border),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Alamat Pengiriman',
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          SpaceHeight(16.h),
+                          Text(
+                            defaultAddress.attributes.name,
+                            style: TextStyle(
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w400,
+                              color: ColorName.grey,
+                            ),
+                          ),
+                          SpaceHeight(8.h),
+                          Text(
+                            defaultAddress.attributes.address,
+                            style: TextStyle(
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w400,
+                              color: ColorName.grey,
+                            ),
+                          ),
+                          SpaceHeight(8.h),
+                          Text(
+                            defaultAddress.attributes.phone,
+                            style: TextStyle(
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w400,
+                              color: ColorName.grey,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                );
+              },
             ),
             SpaceHeight(16.h),
             /* container for dropdown courier */

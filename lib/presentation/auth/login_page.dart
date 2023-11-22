@@ -89,8 +89,12 @@ class _LoginPageState extends State<LoginPage> {
               listener: (context, state) {
                 state.maybeWhen(
                   orElse: () {},
+                  loading: () {
+                    ShowMessage.loading(ctx: context);
+                  },
                   success: (data) async {
                     AuthLocalDatasource().saveAuthData(data);
+                    Navigator.pop(context);
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -103,12 +107,14 @@ class _LoginPageState extends State<LoginPage> {
                       ctx: context,
                       message: 'Login Success',
                     );
+                    
                   },
                   error: (message) {
                     ShowMessage.error(
                       ctx: context,
                       message: message,
                     );
+                    Navigator.pop(context);
                   },
                 );
               },
@@ -127,11 +133,6 @@ class _LoginPageState extends State<LoginPage> {
                             .add(LoginEvent.login(data: data));
                       },
                       label: 'Login',
-                    );
-                  },
-                  loading: () {
-                    return const Center(
-                      child: CircularProgressIndicator(),
                     );
                   },
                 );

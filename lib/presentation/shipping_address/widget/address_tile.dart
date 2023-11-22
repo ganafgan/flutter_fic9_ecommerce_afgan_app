@@ -2,11 +2,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ecommerce/common/components/button.dart';
 import 'package:flutter_ecommerce/common/components/space_height.dart';
-import 'package:flutter_ecommerce/common/constants/images.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import 'package:flutter_ecommerce/common/constants/colors.dart';
-import 'package:flutter_ecommerce/presentation/shipping_address/model/address_model.dart';
+import 'package:flutter_ecommerce/common/constants/images.dart';
+import 'package:flutter_ecommerce/data/model/responses/get_address_response_model.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AddressTile extends StatelessWidget {
   const AddressTile({
@@ -24,7 +23,7 @@ class AddressTile extends StatelessWidget {
    */
 
   final bool isSelected;
-  final AddressModel data;
+  final GetAddress data;
   final void Function() onTap;
   final void Function() onEditTap;
   final void Function() onDeleteTap;
@@ -43,7 +42,7 @@ class AddressTile extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              data.name,
+              data.attributes.name,
               style: TextStyle(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w700,
@@ -51,7 +50,7 @@ class AddressTile extends StatelessWidget {
             ),
             SpaceHeight(10.h),
             Text(
-              data.address,
+              data.attributes.address,
               style: TextStyle(
                 fontSize: 12.sp,
                 fontWeight: FontWeight.w400,
@@ -60,7 +59,7 @@ class AddressTile extends StatelessWidget {
             ),
             SpaceHeight(10.h),
             Text(
-              data.phoneNumber,
+              data.attributes.phone,
               style: TextStyle(
                 fontSize: 12.sp,
                 fontWeight: FontWeight.w400,
