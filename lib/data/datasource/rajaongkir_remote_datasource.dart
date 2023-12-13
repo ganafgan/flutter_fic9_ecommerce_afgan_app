@@ -79,7 +79,7 @@ class RajaOngkirRemoteDatasource {
         'originType': 'subdistrict',
         'destination': destination,
         'destinationType': 'subdistrict',
-        'wight': '500',
+        'weight': '500',
         'courier': courier,
       },
     );
